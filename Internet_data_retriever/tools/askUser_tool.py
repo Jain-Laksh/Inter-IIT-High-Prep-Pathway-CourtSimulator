@@ -1,6 +1,6 @@
 # from langchain.tools import tool
 from crewai.tools import tool
-from pydantic import BaseModel, Field
+# from pydantic import BaseModel, Field
 
 # class AskSchema(BaseModel):
 #     question: str = Field(

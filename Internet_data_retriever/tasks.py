@@ -62,7 +62,9 @@ class RetrievalTasks:
         '''), 
         agent=agent,
         expected_output=dedent('''A well-structured, logical, and factually correct counterargument that directly addresses the original argument. 
-                The counterargument should include examples and cite sources to support the argument effectively.'''))
+                The counterargument should include examples and cite sources to support the argument effectively. Provide a references section with
+                 website links which were used to formulate the counterargument.
+            '''))
 
     # def evaluate_counterargument(self, agent, argument):
     #     return Task(description=dedent(f'''
