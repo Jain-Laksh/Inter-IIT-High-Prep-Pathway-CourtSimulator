@@ -1,0 +1,4 @@
+crewai
+unstructured
+python-dotenv
+langchain_groq
