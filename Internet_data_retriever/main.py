@@ -45,20 +45,18 @@ class DataRetrievalCrew:
         retrieve_info_task = tasks.retrieve_information(legal_researcher, argument)
         formulate_counterargument_task = tasks.formulate_counterargument(legal_researcher, argument)
         evaluate_counterargument_task = tasks.evaluate_counterargument(legal_assistant, argument)
-        request_additional_info_task = tasks.request_additional_information(legal_assistant, argument)
-        refine_counterargument_task = tasks.refine_counterargument(legal_assistant, argument)
 
         # Routing function
-        def routing(last_task_output):
-            # First, check if the counterargument needs refinement
-            if 'no' in str(last_task_output).lower()[:10]:
-                return [request_additional_info_task, refine_counterargument_task]
+        # def routing(last_task_output):
+        #     # First, check if the counterargument needs refinement
+        #     if 'no' in str(last_task_output).lower()[:10]:
+        #         return [request_additional_info_task, refine_counterargument_task]
 
-            # If everything looks good, return the final counterargument
-            return None
+        #     # If everything looks good, return the final counterargument
+        #     return None
 
         # Create the crew with sequential processing and custom routing
-        crew = Crew(
+        crew1 = Crew(
             agents=[legal_researcher, legal_assistant],
             tasks=[
                 search_queries_task,
@@ -67,15 +65,28 @@ class DataRetrievalCrew:
                 evaluate_counterargument_task
             ],
             process=Process.sequential,
-            task_routing=routing
+            # task_routing=routing
         )
 
-        result = crew.kickoff()
+        result = crew1.kickoff()
 
         if 'yes' in str(result).lower()[:10]:
             return formulate_counterargument_task.output
         
-        return result
+        else:
+
+            request_additional_info_task = tasks.request_additional_information(legal_assistant, argument, formulate_counterargument_task.output)
+            refine_counterargument_task = tasks.refine_counterargument(legal_assistant, argument, formulate_counterargument_task.output)
+
+            crew2 = Crew(
+            agents=[legal_assistant],
+            tasks=[request_additional_info_task, refine_counterargument_task],
+            process=Process.sequential,
+            # task_routing=routing
+            )
+
+            result = crew2.kickoff()
+            return result
 
 
 # This is the main function that you will use to run your custom crew.

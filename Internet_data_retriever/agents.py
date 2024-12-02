@@ -10,7 +10,7 @@ class DataRetrieverAgents:
         # self.OpenAIGPT35 = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.7)
         # self.OpenAIGPT4 = ChatOpenAI(model_name="gpt-4", temperature=0.7)
         # self.Ollama = Ollama(model="openhermes")
-        self.llm = ChatGroq(model="groq/llama3-8b-8192",groq_api_key=os.environ['GROQ_API_KEY'])
+        self.llm = ChatGroq(model="groq/gemma2-9b-it",groq_api_key=os.environ['GROQ_API_KEY'])
         
 
     def legal_researcher(self):

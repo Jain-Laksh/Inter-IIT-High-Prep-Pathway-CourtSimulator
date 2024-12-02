@@ -10,10 +10,9 @@ class RetrievalTasks:
     def generate_search_queries(self, agent, argument):
         return Task(description=dedent(f'''
         **Task**: Generate Search Queries  
-        **Description**: Formulate precise and relevant search queries to find counterarguments, 
-                         examples, and supporting information to counter the provided argument using internet resources.
-                         Your final output must be a list formatted as a numbered list of search queries that can be used 
-                         to retrieve relevant information.
+        **Description**: Formulate precise and relevant search queries to find counterarguments, examples, and supporting information
+                         to counter the provided argument using internet resources. Your final output must be a list of search queries 
+                         that can be used to retrieve relevant information.
 
         **Parameters**:  
         - Argument: {argument}
@@ -23,7 +22,7 @@ class RetrievalTasks:
         '''),
         agent=agent,
         expected_output=dedent('''
-                A list of 3 distinct search queries, each designed to 
+                A list of 3-4 distinct search queries, each designed to 
                 uncover a different angle or perspective on the argument. 
                 Format the output as a python list of search queries.
             '''))
@@ -65,31 +64,63 @@ class RetrievalTasks:
         expected_output=dedent('''A well-structured, logical, and factually correct counterargument that directly addresses the original argument. 
                 The counterargument should include examples and cite sources to support the argument effectively.'''))
 
+    # def evaluate_counterargument(self, agent, argument):
+    #     return Task(description=dedent(f'''
+    #     **Task**: Evaluate Counterargument  
+    #     **Description**: Assess the validity of the counterargument provided by the Legal Researcher. Check if it is comprehensive 
+    #                      and aligned with the original argument's context. Decide if the argument to be countered is directed towards the client/user 
+    #                      or needs to know personal information from the user. If user-specific information is needed then the argument is not valid.
+    #                      If the counterargument is valid, approve it else disapprove it.
+    #                      Your final output must be a SINGLE word which is "YES" if counterargument is valid and "NO" if it is not valid.  
+
+    #     **Parameters**:  
+    #     - Argument to be countered: {argument}
+
+    #     **Note**: {self.__tip_section()}
+    #     '''),
+    #     agent=agent,
+    #     expected_output=dedent('''return a SINGLE word as output. It should be "YES" if counterargument is valid and "NO" if it is not valid.'''))
+
     def evaluate_counterargument(self, agent, argument):
         return Task(description=dedent(f'''
         **Task**: Evaluate Counterargument  
-        **Description**: Assess the validity of the counterargument provided by the Legal Researcher. Check if it is comprehensive 
-                         and aligned with the original argument's context. If the counterargument is valid, approve it else disapprove it.
-                         Your final output must be a SINGLE word which is "YES" if counterargument is valid and "NO" if it is not valid.  
+        **Objective**: Determine the validity of a counterargument provided by the Legal Researcher.  
+
+        **Steps**:  
+        1. Analyze the original argument for any explicit or implicit need for user-specific information.
+        - If user-specific information is required to address the argument effectively, mark the counterargument as INVALID.
+        - Otherwise, proceed to step 2.
+                                       
+        2. Verify the logical soundness and comprehensiveness of the counterargument:
+        -Does the counterargument address the original argument effectively?
+        -Is it supported by credible sources or logical reasoning?
+                                       
+        3. Final decision:
+        -Return "NO" if the counterargument fails to address the argument comprehensively or relies on missing user-specific information.
+        -Return "YES" only if the counterargument is both logically valid and independent of user-specific information. 
 
         **Parameters**:  
-        - Argument to be countered: {argument}
+        - **Argument to be Countered**: {argument}  
 
-        **Note**: Ensure the counterargument is comprehensive and aligned with the original argument's context. {self.__tip_section()}
+        **Important Notes**:  
+        - Your final output must be a SINGLE word: **"YES"** or **"NO"**.  
+        - Always ensure the decision aligns strictly with the provided evaluation criteria.  
         '''),
         agent=agent,
-        expected_output=dedent('''return a SINGLE word as output. It should be "YES" if counterargument is valid and "NO" if it is not valid.'''))
+        expected_output=dedent('''return a SINGLE word as output: "YES" if valid, "NO" if invalid.'''))
 
-    def request_additional_information(self, agent, argument):
+
+    def request_additional_information(self, agent, argument,counter_argument):
         return Task(description=dedent(f'''
         **Task**: Request Additional Information  
-        **Description**: Identify information needed to counter argument and request additional specifics from the user to address these gaps.
+        **Description**: Identify information needed from the user to counter the input argument and request additional specifics from the user to address these gaps.
                          Use the askUser tool to ask user specific questions to gather the necessary information. Clearly communicate what 
                          information is needed and ask specific question to user to improve the counterargument. You may or may not use the
-                         Old or incorrect counter argument. Your final output must be the additional information provided by the user.
+                         incomplete or incorrect counter argument. Your final output must be the additional information provided by the user.
 
         **Parameters**:  
-        - Argument to be countered: {argument}
+        - Input Argument to be countered: {argument}
+        - Incomplete or incorrect counter argument: {counter_argument}
 
         **Note**:{self.__tip_section()}
         '''),
@@ -97,15 +128,16 @@ class RetrievalTasks:
         agent=agent,
         expected_output=dedent('''The additional information provided by the user to improve the counterargument. '''))
 
-    def refine_counterargument(self, agent, argument):
+    def refine_counterargument(self, agent, argument,counter_argument):
         return Task(description=dedent(f'''
         **Task**: Refine/Reformulate the Counterargument  
         **Description**: MODIFY or REFORMULATE the provided counterargument using additional specifics or feedback from the user to ensure it is 
-                         legally sound and tailored to the case. You may or may not use the Old or incorrect counter argument. Your final output 
+                         legally sound and tailored to the case. You may or may not use the incomplete or incorrect counter argument. Your final output 
                          must be a refined counterargument that addresses all aspects of the original argument.
 
         **Parameters**:  
         - Argument to be countered: {argument}
+        - Incomplete or incorrect counterargument: {counter_argument}
 
         **Note**: Strive for precision and clarity in the refined argument. Ensure it meets all case-specific requirements. {self.__tip_section()}
         '''),
