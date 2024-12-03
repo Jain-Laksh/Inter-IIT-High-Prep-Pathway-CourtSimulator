@@ -137,10 +137,13 @@ class SearchTools():
                 
                 results = response.json().get('webPages', {}).get('value', [])
                 for result in results:
-                    string.append('\n'.join([
-                        f"Title: {result['name']}", f"Link: {result['url']}",
-                        f"Snippet: {result['snippet']}", "\n-----------------"
-                    ]))
+                    try:
+                        string.append('\n'.join([
+                            f"Title: {result['name']}", f"Link: {result['url']}",
+                            f"Snippet: {result['snippet']}", "\n-----------------"
+                        ]))
+                    except KeyError:
+                        continue
             
             except Exception as e:
                 # If both Serper and Bing fail, return an error message
