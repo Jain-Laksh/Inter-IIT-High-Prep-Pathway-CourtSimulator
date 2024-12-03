@@ -148,6 +148,9 @@ class RetrievalTasks:
                 and tailored to the case.'''))
 
 
+
+###TASK TEMPLATE###
+
     # def task_name(self, agent):
     #     return Task(
     #         description=dedent(

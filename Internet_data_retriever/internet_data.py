@@ -1,24 +1,11 @@
 import os
 from crewai import Crew, Process
-# from langchain_openai import ChatOpenAI
-# from decouple import config
-
 from textwrap import dedent
 from agents import DataRetrieverAgents
 from tasks import RetrievalTasks
 
 from dotenv import load_dotenv
 # load_dotenv()
-
-# Install duckduckgo-search for this example:
-# !pip install -U duckduckgo-search
-
-# from langchain.tools import DuckDuckGoSearchRun
-
-# search_tool = DuckDuckGoSearchRun()
-
-# os.environ["OPENAI_API_KEY"] = config("OPENAI_API_KEY")
-# os.environ["OPENAI_ORGANIZATION"] = config("OPENAI_ORGANIZATION_ID")
 
 # Debug prints
 print("Loading environment variables...")
@@ -44,18 +31,9 @@ class DataRetrievalCrew:
         search_queries_task = tasks.generate_search_queries(legal_researcher, argument)
         retrieve_info_task = tasks.retrieve_information(legal_researcher, argument)
         formulate_counterargument_task = tasks.formulate_counterargument(legal_researcher, argument)
-        evaluate_counterargument_task = tasks.evaluate_counterargument(legal_assistant, argument)
+        # evaluate_counterargument_task = tasks.evaluate_counterargument(legal_assistant, argument)
 
-        # Routing function
-        # def routing(last_task_output):
-        #     # First, check if the counterargument needs refinement
-        #     if 'no' in str(last_task_output).lower()[:10]:
-        #         return [request_additional_info_task, refine_counterargument_task]
-
-        #     # If everything looks good, return the final counterargument
-        #     return None
-
-        # Create the crew with sequential processing and custom routing
+        # Create the crew with sequential processing
         crew1 = Crew(
             agents=[legal_researcher, legal_assistant],
             tasks=[
@@ -65,7 +43,6 @@ class DataRetrievalCrew:
                 # evaluate_counterargument_task
             ],
             process=Process.sequential,
-            # task_routing=routing
         )
 
         result = crew1.kickoff()
