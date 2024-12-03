@@ -1,8 +1,8 @@
 import os
 from crewai import Crew, Process
 from textwrap import dedent
-from agents import DataRetrieverAgents
-from tasks import RetrievalTasks
+from .agents import DataRetrieverAgents
+from .tasks import RetrievalTasks
 
 from dotenv import load_dotenv
 # load_dotenv()
